@@ -1,0 +1,5 @@
+﻿  1_zad.c
+C:\Users\LEGION\source\repos\zad 1\zad 1\1_zad.c(33,52): warning C4013: 'calculateRelativePoints' undefined; assuming extern returning int
+C:\Users\LEGION\source\repos\zad 1\zad 1\1_zad.c(60,12): warning C4013: 'strcmp' undefined; assuming extern returning int
+C:\Users\LEGION\source\repos\zad 1\zad 1\1_zad.c(68,38): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+  zad 1.vcxproj -> C:\Users\LEGION\source\repos\zad 1\Debug\zad 1.exe

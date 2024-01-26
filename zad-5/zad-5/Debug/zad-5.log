@@ -1,0 +1,3 @@
+﻿  Source.c
+C:\Users\LEGION\source\repos\zad-5\zad-5\Source.c(59,20): warning C4047: 'return': 'int' differs in levels of indirection from 'void *'
+  zad-5.vcxproj -> C:\Users\LEGION\source\repos\zad-5\Debug\zad-5.exe

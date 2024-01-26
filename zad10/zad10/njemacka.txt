@@ -1,0 +1,3 @@
+Berlin 3600000
+Frankfurt 760000
+Munchen 1400000

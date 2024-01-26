@@ -1,0 +1,3 @@
+﻿  2zadazak.c
+C:\Users\LEGION\source\repos\2zad\2zad\2zadazak.c(73,29): error C2440: '=': cannot convert from 'Position' to 'person'
+C:\Users\LEGION\source\repos\2zad\2zad\2zadazak.c(155,5): warning C4047: 'initializing': 'char' differs in levels of indirection from 'void *'

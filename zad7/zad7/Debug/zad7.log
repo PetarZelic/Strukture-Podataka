@@ -1,0 +1,4 @@
+﻿  Source.c
+C:\Users\LEGION\source\repos\zad7\zad7\Source.c(95,12): warning C4047: 'return': 'position_directory' differs in levels of indirection from 'int'
+C:\Users\LEGION\source\repos\zad7\zad7\Source.c(97,22): warning C4133: 'function': incompatible types - from 'position_directory' to 'char *'
+  zad7.vcxproj -> C:\Users\LEGION\source\repos\zad7\Debug\zad7.exe
