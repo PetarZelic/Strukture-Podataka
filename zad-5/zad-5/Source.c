@@ -2,210 +2,199 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
+#define MAX_LINE (1024)
 #define MAX_SIZE (50)
-#define MAX_LENGTH (1024)
-
-struct _stackElement;
-typedef struct _stackElement* Position;
-typedef struct _stackElement {
-    double number;
-    Position next;
-} StackElement;
+#define Failed_To_Allocate (NULL)
+#define ErrorInCreation (-1)
+#define Sucess (1)
+#define Fail_To_Open_File (NULL)
+#define Error_Calclating
 
 
-int calculatePostfixFromFile(Position head, char* fileName, double* result);
-int readFile(char* fileName, char* buffer);
-int parseStringIntoPostfix(Position head, char* buffer, double* result);
-int checkStackAndExtractResult(Position head, double* result);
-Position createStackElement(double number);
-int push(Position head, Position newStackElement);
-int printStack(Position first);
-int pop(Position head, double* result);
-int popAndPerformOperation(Position head, char operation, double* result);
+
+
+struct _Stack;
+typedef struct _Stack* Position;
+typedef struct _Stack {
+	int Element;
+	Position next;
+}Stack;
+
+int Push(Position Head, int Number);
+int StackPrint(Position FirstElement);
+int Pop(Position Head);
+int Top(Position FirstElement);
+char* ReadFromFile(char* filename);
+int CalculatePostfix(Position Head, char* Postfix);
+int CountStack(Position FirstElement);
+int ClearStack(Position Head);
+
+Position AllocateMemory();
+
 
 int main() {
-    StackElement head = { .number = 0, .next = NULL };
-    double result = 0;
 
-    if (calculatePostfixFromFile(&head, "postfix.txt", &result) == EXIT_SUCCESS) {
-        printf("Result is: %0.1lf\n", result);
-    }
-
-    return EXIT_SUCCESS;
+	Stack Head = { .Element = 0, .next = NULL };
+	char Postfix[MAX_LINE] = { 0 };
+	strcpy(Postfix, ReadFromFile("postfix.txt"));
+	if (!Postfix)
+		return Fail_To_Open_File;
+	int x = CalculatePostfix(&Head, Postfix);
+	
+	printf("%d", x);
+	return 0;
 }
 
-int calculatePostfixFromFile(Position head, char* fileName, double* result) {
-    char buffer[MAX_LENGTH] = { 0 };
-    int status = 0;
-
-    if (readFile(fileName, buffer) != EXIT_SUCCESS || !buffer) {
-        return EXIT_FAILURE;
-    }
-
-    status = parseStringIntoPostfix(head, buffer, result);
-    if (status != EXIT_SUCCESS) {
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+int ClearStack(Position Head) {
+	while (CountStack(Head->next) > 0)
+		Pop(Head);
+	return 0;
 }
 
-int readFile(char* fileName, char* buffer) {
-    FILE* filePointer = NULL;
-    filePointer = fopen(fileName, "r");
-    if (!filePointer) {
-        perror("Can't open file!\n");
-        return NULL;
-    }
-
-    fgets(buffer, MAX_LENGTH, filePointer);
-    printf("|%s|\n", buffer);
-
-    fclose(filePointer);
-
-    return EXIT_SUCCESS;
+int CountStack(Position FirstElement) {
+	int counter = 0;
+	while (FirstElement != NULL) {
+		FirstElement = FirstElement->next;
+		counter++;
+	}
+	return counter;
 }
 
-int parseStringIntoPostfix(Position head, char* buffer, double* result)
-{
-    char* currentBuffer = buffer;
-    int status = 0;
-    int numBytes = 0;
-    char operation = 0;
-    double number = 0.0;
-    Position newStackElement = NULL;
+int CalculatePostfix(Position Head, char* Postfix) {
+	int counter = 0;
+	char currentChar = Postfix[counter];
+	while (currentChar != '\0') {
+		currentChar = Postfix[counter];
+		if (isdigit(currentChar) != 0)
+			Push(Head, currentChar - '0');
+		else {
 
-    while (strlen(currentBuffer) > 0) {
-        status = sscanf(currentBuffer, " %lf %n", &number, &numBytes);
-        if (status != 1) {
-            sscanf(currentBuffer, " %c %n", &operation, &numBytes);
-            status = popAndPerformOperation(head, operation, result);
+		
+			int first = 0;
+			int second = 0;
+			switch (currentChar)
+			{
+			case '+':
+				first = Pop(Head);
+				second = Pop(Head);
+				if (first && second) {
+					Push(Head, first + second);
+				}
+				else {
+					printf("Wrong postfix");
+					return 0;
+				}
+				break;
 
-            if (status != EXIT_SUCCESS) {
-                return EXIT_FAILURE;
-            }
+			case '-':
+				first = Pop(Head);
+				second = Pop(Head);
+				if (first && second) {
+					Push(Head, second - first);
+				}
+				else {
+					printf("Wrong postfix");
+					return 0;
+				}
+				break;
 
-            number = *result;
-        }
+			case '*':
+				first = Pop(Head);
+				second = Pop(Head);
+				if (first && second) {
+					Push(Head, first * second);
+				}
+				else {
+					printf("Wrong postfix");
+					return 0;
+				}
+				break;
 
-        newStackElement = createStackElement(number);
-        if (!newStackElement) {
-            return EXIT_FAILURE;
-        }
+			case '/':
+				first = Pop(Head);
+				second = Pop(Head);
+				if (first && second) {
+					Push(Head, first / second);
+				}
+				else {
+					printf("Wrong postfix");
+					return 0;
+				}
+				break;
+			}
 
-        currentBuffer += numBytes;
-        printf("|%s| <-->", currentBuffer);
-        push(head, newStackElement);
-    }
-
-    return checkStackAndExtractResult(head, result);
+		}
+		counter++;
+	}
+	if (CountStack(Head->next) != 1) {
+		return Error_Calclating;
+	}
+	return Top(Head->next);
 }
 
-int checkStackAndExtractResult(Position head, double* result) {
-    int status = EXIT_SUCCESS;
 
-    status = pop(head, result);
-
-    if (status != EXIT_SUCCESS) {
-        return status;
-    }
-
-    if (head->next) {
-        system("cls"); //clear screen
-        printf("Invalid postfix, please check the file!\r\n");
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+char* ReadFromFile(char* filename) {
+	FILE* FilePointer = NULL;
+	FilePointer = fopen(filename, "r");
+	if (!FilePointer)
+		return Fail_To_Open_File;
+	char Buffer[MAX_LINE] = { 0 };
+	fgets(Buffer, MAX_LINE, FilePointer);
+	return Buffer;
 }
 
-Position createStackElement(double number)
-{
-    Position newStackElement = NULL;
 
-    newStackElement = (Position)malloc(sizeof(StackElement));
-    if (!newStackElement) {
-        perror("Can't allocate memory!\n");
-        return NULL;
-    }
-
-    newStackElement->number = number;
-    newStackElement->next = NULL;
-
-    return newStackElement;
+int Top(Position FirstElement) {
+	if (FirstElement == NULL) {
+		printf("Empty stack");
+		return 0;
+	}
+	while (FirstElement->next != NULL)
+		FirstElement = FirstElement->next;
+	return FirstElement->Element;
 }
 
-int push(Position head, Position newStackElement) {
-    newStackElement->next = head->next;
-    head->next = newStackElement;
-
-    printStack(head->next);
-
-    return EXIT_SUCCESS;
+Position AllocateMemory() {
+	Position ToAllocate = NULL;
+	ToAllocate = (Position)malloc(sizeof(Stack));
+	if (ToAllocate)
+		return ToAllocate;
+	else
+		return Failed_To_Allocate;
 }
 
-int printStack(Position first) {
-    Position current = first;
 
-    while (current) {
-        printf(" %0.1lf", current->number);
-        current = current->next;
-    }
-    printf("\n");
-
-    return EXIT_SUCCESS;
+int Pop(Position Head) {
+	if (Head->next == NULL)
+		return NULL;
+	while (Head->next->next != NULL)
+		Head = Head->next;
+	int ToReturn = Head->next->Element;
+	free(Head->next);
+	Head->next = NULL;
+	return ToReturn;
 }
 
-int pop(Position head, double* result) {
-    Position toDelete = NULL;
 
-    toDelete = head->next;
-    if (!toDelete) {
-        printf("Stack is empty! Nothing to pop!\n");
-        return -1;
-    }
-
-    head->next = toDelete->next;
-    *result = toDelete->number;
-    free(toDelete);
-
-    return EXIT_SUCCESS;
+int Push(Position Head, int Number) {
+	while (Head->next != NULL)
+		Head = Head->next;
+	Position StackToAdd = NULL;
+	StackToAdd = AllocateMemory();
+	if (!StackToAdd)
+		return ErrorInCreation;
+	StackToAdd->Element = Number;
+	StackToAdd->next = NULL;
+	Head->next = StackToAdd;
+	return Sucess;
 }
 
-int popAndPerformOperation(Position head, char operation, double* result) {
-    double operand1 = 0;
-    double operand2 = 0;
-    int status1 = 0;
-    int status2 = 0;
-
-    status1 = pop(head, &operand1);
-    if (status1 != EXIT_SUCCESS) {
-        return EXIT_FAILURE;
-    }
-
-    status2 = pop(head, &operand2);
-    if (status2 != EXIT_SUCCESS) {
-        return EXIT_FAILURE;
-    }
-
-    switch (operation) {
-    case '+':
-        *result = operand2 + operand1;
-        break;
-    case '-':
-        *result = operand2 - operand1;
-        break;
-    case '*':
-        *result = operand2 * operand1;
-        break;
-    case '/':
-        *result = operand2 / operand1;
-        break;
-    default:
-        printf("Operation %c not supported yet!\r\n", operation);
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+int StackPrint(Position FirstElement) {
+	while (FirstElement != NULL) {
+		printf("\n%d", FirstElement->Element);
+		FirstElement = FirstElement->next;
+	}
+	return Sucess;
 }

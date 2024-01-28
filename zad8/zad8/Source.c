@@ -16,7 +16,8 @@ int printPostorder(position current);
 int printPreorder(position  current);
 int printLevelorder(position current);
 position findTarget(position current, int targetValue);
-
+position deleteElement(position root, int value);
+position minimum(position root);
 
 int main() {
 	position root = malloc(sizeof(node));
@@ -27,7 +28,7 @@ int main() {
 	root->left = NULL;
 	root->right = NULL;
 	root->value = 0;
-	//position element = root;
+	
 
 	int val=1;
 	int choice;
@@ -49,7 +50,7 @@ int main() {
 		int newValue;
 		char simbol;
 		position target;
-
+		int element = 0;
 		switch (choice)		{
 		case 1:
 			
@@ -76,10 +77,15 @@ int main() {
 				printPreorder(root);
 				break;
 			case 'D':
+				printLevelorder(root);
 				break;
 			}
 			break;
 		case 3:
+			
+			printf("Enter the element to delete:");
+			scanf("%d", &element);
+			deleteElement(root, element);
 
 			break;
 		case 4:
@@ -157,9 +163,26 @@ int printPreorder(position  current) {
 	printInorder(current->right);
 	return 1;
 }
-int printLevelorder(position current) {
+int printLevelorder(position root) {
+	if (root == NULL) {
+		return 1;
+	}
 
+	position queue[100];
+	int front = 0, rear = 0;
+	queue[rear++] = root;
 
+	while (front < rear) {
+		position current = queue[front++];
+		printf("%d ", current->value);
+
+		if (current->left != NULL)
+			queue[rear++] = current->left;
+
+		if (current->right != NULL)
+			queue[rear++] = current->right;
+	}
+	return 0;
 }
 
 position findTarget(position current, int targetValue) {
@@ -174,4 +197,42 @@ position findTarget(position current, int targetValue) {
 		return current;
 	}
 	return NULL;
+}
+
+position deleteElement(position root, int value)
+{
+	if (root == NULL) {
+		printf("Element not found");
+		return NULL;
+	}
+
+	if (value < root->value) {
+		root->left = deleteElement(root->left, value);
+	}
+	else if (value > root->value) {
+		root->right = deleteElement(root->right, value);
+	}
+	else if (root->left != NULL && root->right != NULL) {
+		position temp = minimum(root->right);
+		root->value = temp->value;
+		root->right = deleteElement(root->right, root->value);
+	}
+	else {
+		position toDelete = root;
+		if (root->left == NULL) {
+			root = root->right;
+		}
+		else {
+			root = root->left;
+		}
+		free(toDelete);
+	}
+
+	return root;
+}
+position minimum(position root) {
+	while (root->left != NULL) {
+		root = root->left;
+	}
+	return root;
 }

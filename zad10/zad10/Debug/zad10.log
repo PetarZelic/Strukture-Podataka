@@ -1,1 +1,6 @@
-﻿  zad10.vcxproj -> C:\Users\LEGION\source\repos\zad10\Debug\zad10.exe
+﻿  Source.c
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad10\zad10\Source.c(192,23): warning C4047: 'return': 'CountryPosition' differs in levels of indirection from 'int'
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad10\zad10\Source.c(116): warning C4716: 'printAllCountriesFromHash': must return a value
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad10\zad10\Source.c(363): warning C4716: 'printCountryList': must return a value
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad10\zad10\Source.c(381): warning C4716: 'printTownList': must return a value
+  zad10.vcxproj -> C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad10\Debug\zad10.exe

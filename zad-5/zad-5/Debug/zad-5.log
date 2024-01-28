@@ -1,3 +1,6 @@
 ﻿  Source.c
-C:\Users\LEGION\source\repos\zad-5\zad-5\Source.c(59,20): warning C4047: 'return': 'int' differs in levels of indirection from 'void *'
-  zad-5.vcxproj -> C:\Users\LEGION\source\repos\zad-5\Debug\zad-5.exe
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad-5\zad-5\Source.c(132,3): warning C4033: 'CalculatePostfix' must return a value
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad-5\zad-5\Source.c(171,14): warning C4047: 'return': 'int' differs in levels of indirection from 'void *'
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad-5\zad-5\Source.c(145): warning C4172: returning address of local variable or temporary: Buffer
+C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad-5\zad-5\Source.c(135): warning C4715: 'CalculatePostfix': not all control paths return a value
+  zad-5.vcxproj -> C:\Users\LEGION\Documents\Strukture-Podataka-main\Strukture-Podataka-main\zad-5\Debug\zad-5.exe
